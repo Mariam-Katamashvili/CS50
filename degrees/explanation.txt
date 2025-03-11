@@ -1,0 +1,21 @@
+Our goal was to write a function which would find the shortest path between source and target - two actors.
+Since our search is uninformed we have to use either BFS or DFS. For finding the shortest path BFS generally performs better.
+So I implemented BFS algorithm in shortest_path function.
+
+First, we have to check all the neighbors of source actor.
+The function for finding neighbors was already defined. It returns (movie_id, person_id) pairs for the argument.
+So this method would return ALL people with whom source actor has played with.
+All those pairs are added to the queue as soon as they are discovered and actors are marked as visited so that we don't visit one actor twice.
+Also we keep track of path so we know for each actor which movie brought us there.
+        for movie, co_actor in neighbors_for_person(actor_id):
+            if co_actor not in visited:
+                visited.add(co_actor)
+                parent[co_actor] = (movie, actor_id)
+                queue.append((movie, co_actor))
+
+After sources neighbors are added to the queue, the algorithm pops the first pair from the queue.
+Then we check if that actor is target. If not we call neighbor function on this actor.
+Each new actor that hasn’t been visited yet is added to the queue with the movie through which they were discovered, and they are marked as visited.
+Then we check the second neighbor of the source actor (because its FIFO) and keep doing the same thing until we find the target.
+Once we find the target we reconstruct the path and that's it.
+
