@@ -1,0 +1,19 @@
+initial_state method defines tictactoe board before the game start - empty.
+
+player function needs to find whos turn it is. It is done by checking if the amount of x and o are equal. If so, then return x, if not return o.
+
+actions returns all possible cells where move can be made - it returns empty cells
+
+result simply adds the action to the board by first copying it and placing action on the i,j cell
+
+winner checks if there are same symbols on lines. It is achieved by simply checking 0,i 1,i 2,i; i,0 i,1 i,2 and diagonals.
+
+terminal function checks if there is no winner and no cell is empty. If no cell is empty it means that game is draw.
+
+utility function simply checks who won the game and assigns 1 0 or -1. This is necessary for minimax algorithm.
+
+minimax function is the most important part of this code. This algorithm decides what is the best move by recursively checking all possible solutions and finding the most optimal one.
+if the player is X then it is looking for maximal value to be its outcome since winning value of X is 1.
+X tries to find the maximal value from all actions based on what O would choose.
+It recursively calls min_value function which then calls max_value function because both of players think that the other one will play optimally.
+The same is done for O. If the computer is O then It want to find the minimum possible value, so it tries to find the minimum among maximums.
