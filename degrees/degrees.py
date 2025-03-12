@@ -1,6 +1,5 @@
 import csv
 import sys
-from collections import deque
 
 from util import Node, StackFrontier, QueueFrontier
 
@@ -92,29 +91,29 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-    queue = deque([(None, source)])
-    visited = set()
-    visited.add(source)
-    parent = {}
+    start = Node(state=source, parent=None, action=None)
+    frontier = QueueFrontier()
+    frontier.add(start)
 
-    while queue:
-        movie_id, actor_id = queue.popleft()
+    explored = set()
 
-        if actor_id == target:
+    while not frontier.empty():
+        node = frontier.remove()
+
+        if node.state == target:
             path = []
-            while actor_id is not None:
-                prev_movie, prev_actor = parent.get(actor_id, (None, None))
-                if prev_actor is not None:
-                    path.append((prev_movie, actor_id))
-                actor_id = prev_actor
+            while node.parent is not None:
+                path.append((node.action, node.state))
+                node = node.parent
             path.reverse()
             return path
 
-        for movie, co_actor in neighbors_for_person(actor_id):
-            if co_actor not in visited:
-                visited.add(co_actor)
-                parent[co_actor] = (movie, actor_id)
-                queue.append((movie, co_actor))
+        explored.add(node.state)
+
+        for movie, person in neighbors_for_person(node.state):
+            if person not in explored and not frontier.contains_state(person):
+                child = Node(state=person, parent=node, action=movie)
+                frontier.add(child)
 
     return None
 
