@@ -1,6 +1,6 @@
 # CS50 AI Course Solutions
 
-Welcome to my repository of solutions for the CS50’s Introduction to Artificial Intelligence with Python course! This repository contains my solutions, along with detailed explanations of the code.
+Welcome to the repository of solutions for the CS50’s Introduction to Artificial Intelligence with Python course! This repository contains my solutions, along with detailed explanations of the code.
 
 The repository is organized into folders for each task. Inside each folder, you'll find the following:
 - **Task Files:** The task description.
