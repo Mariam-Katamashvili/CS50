@@ -7,6 +7,13 @@ The repository is organized into folders for each task. Inside each folder, you'
 - **Solution Files:** My solution.
 - **Explanation Files:** Detailed explanations of the code and approach.
 
+### Order of Tasks  
+The tasks in this repository are structured in the following order:  
+1. **Degrees**  
+2. **Tic-Tac-Toe**  
+3. **Knights**  
+4. **Minesweeper**
+
 ## Getting Started
 
 To clone this repository, run the following command in your terminal:
