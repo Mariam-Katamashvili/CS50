@@ -13,6 +13,8 @@ The tasks in this repository are structured in the following order:
 2. **Tic-Tac-Toe**  
 3. **Knights**  
 4. **Minesweeper**
+5. **PageRank**
+6. **Heredity**
 
 ## Getting Started
 
