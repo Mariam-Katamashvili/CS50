@@ -1,19 +1,36 @@
-# Explanation of the `joint_probability` Function
+# Explanation of the Implementation
 
-The `joint_probability` function starts with its signature and a comprehensive docstring that explains its purpose. The function accepts a dictionary of people and three sets that indicate which individuals have one gene, two genes, or exhibit the trait. The docstring makes clear that the function computes the probability that every person in the dataset has the specified gene count and trait status. This sets the stage for understanding the rest of the code.
+This project involves modeling the inheritance of a gene and its effect on a trait (such as hearing impairment) using a Bayesian network. The goal was to determine the probability distributions for each person’s gene copies (0, 1, or 2) and whether they exhibit the trait. In this task, we only had to implement three functions: **joint_probability**, **update**, and **normalize**.
 
-Immediately after, the function initializes a variable `joint_prob` to 1. This variable is used as a running product, where the probability of each person’s genetic outcome (both their gene count and trait status) will be multiplied together. The idea is that by multiplying these probabilities, the function ultimately calculates the joint probability of the entire configuration.
+## joint_probability
+The joint_probability function calculates the probability of a particular configuration in which each person in the family has a specified number of gene copies and either does or does not exhibit the trait. For every individual, the function first determines how many copies of the gene they are assumed to have by checking membership in the one_gene and two_genes sets. If a person is not in either set, then they have zero copies. The function then checks whether the individual’s parents are listed. For persons without parental data, it simply uses the unconditional probability from PROBS["gene"]:
+````python
+if mother is None and father is None:
+    gene_prob = PROBS["gene"][gene_count]
+````
+For individuals with parents, the probability is computed based on the chance that each parent passes on a gene copy. This involves considering the mutation probability – if a parent has two copies, the gene is passed on with probability 1 - PROBS["mutation"]; if they have one copy, the chance is 0.5; and if they have none, only a mutation could result in a pass. After computing the probability for the gene inheritance, the function also factors in the probability of showing (or not showing) the trait, given the gene count:
+````python
+trait_prob = PROBS["trait"][gene_count][has_trait]
+p *= gene_prob * trait_prob
+````
 
-The function then enters a loop that processes each person in the `people` dictionary. For every individual, the code first determines the number of copies of the gene they possess. This is done by checking if the person appears in the `one_gene` or `two_genes` sets. If the person is in `one_gene`, they are assigned one copy of the gene; if in `two_genes`, they are assigned two copies; and if they are in neither, it is assumed they have zero copies. This gene count is crucial because it is later used to look up probabilities for gene inheritance and trait exhibition.
+## update
+The update function’s role is to take the joint probability computed for a specific configuration and add it to the cumulative probability distributions for each person. The function iterates over every person and first determines the gene count (0, 1, or 2) based on whether the person is in one_gene or two_genes. It then checks whether the person is assumed to exhibit the trait. The following lines show how the respective probabilities are updated:
+````python
+probabilities[person]["gene"][gene_count] += p
+probabilities[person]["trait"][has_trait] += p
+````
 
-Following this, the function determines the person's trait status by checking if their name is in the `have_trait` set. The result is stored as a Boolean value in `has_trait`, which will later be used to retrieve the corresponding probability from the trait probability table.
+This ensures that after considering all possible configurations, the probabilities dictionary accumulates the total probability for each gene and trait outcome for every individual.
 
-Next, the function retrieves the names of the person’s mother and father from the `people` dictionary. This parental information is key to deciding whether the gene probability should be computed using unconditional probabilities (when parental data is absent) or via the genetic inheritance model (when parental data is present). When no parental information is provided (i.e., the mother or father value is `None` or an empty string), the function simply looks up the probability of the person having their specific gene count using the unconditional probability dictionary `PROBS["gene"]`.
+## normalize
+The normalize function ensures that the probability distributions for each person sum to 1 by scaling the probabilities appropriately. For each person, the function first calculates the total sum of the probabilities in the gene distribution and then divides each gene probability by this total. For example, normalization of the gene probabilities is performed with:
+````python
+gene_total = sum(probabilities[person]["gene"].values())
+for gene_count in probabilities[person]["gene"]:
+    probabilities[person]["gene"][gene_count] /= gene_total
+````
+A similar approach is applied to the trait probabilities. This step is crucial because, after the update phase, the values are raw totals accumulated over many configurations. Normalization converts these totals into valid probability distributions while preserving their relative proportions.
 
-In the case where parental information is available, the function enters a more detailed computation to determine the inherited gene probability. A temporary dictionary named `probs` is created to store the probability that each parent passes on the gene. For each parent, the function determines their gene count in a similar manner as it did for the child. If a parent has zero copies of the gene, the chance they pass the gene is equal to the mutation probability from `PROBS["mutation"]` (since only a mutation could cause them to pass the gene). If the parent has one copy, there is a 50% chance they pass on the gene. If they have two copies, the probability is `1 - PROBS["mutation"]` because there is only a small chance of mutation preventing the gene from being passed.
-
-Once the probabilities for each parent are computed, the function calculates the probability that the child ends up with a specific gene count. If the child is to have zero copies, the probability is the product of the chances that neither parent passes on the gene. If the child is to have one copy, the probability is the sum of the two scenarios: one where the mother passes the gene and the father does not, and the other where the father passes the gene and the mother does not. If the child is to have two copies, the probability is the product of the chances that both parents pass on the gene. This approach carefully models the inheritance process based on the parental contributions.
-
-After determining the gene probability for the person, the function calculates the probability that the person exhibits (or does not exhibit) the trait given their gene count. This is done by looking up the corresponding value in the `PROBS["trait"]` dictionary using the person's gene count and the Boolean `has_trait` value. The resulting trait probability is then multiplied with the gene probability.
-
-Finally, the joint probability (`joint_prob`) is updated by multiplying it with the product of the gene probability and the trait probability for that individual. This process is repeated for every person in the dataset, and once the loop is complete, the function returns the final joint probability. This final value represents the overall likelihood of the entire configuration (i.e., the specific combination of gene counts and trait statuses) occurring according to the genetic model described by the probabilities.
+## Summary
+These functions work together to iterate through every possible scenario of gene inheritance and trait exhibition, combine the probabilities for each individual event into an overall joint probability, update cumulative distributions accordingly, and finally normalize these distributions so that they represent proper probabilities.

@@ -202,7 +202,6 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     the person is in `have_gene` and `have_trait`, respectively.
     """
     for person in probabilities:
-        # Determine how many copies of the gene this person has.
         if person in two_genes:
             gene_count = 2
         elif person in one_gene:
@@ -210,10 +209,9 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
         else:
             gene_count = 0
 
-        # Determine whether the person exhibits the trait.
         has_trait = person in have_trait
 
-        # Update the gene and trait probabilities for the person.
+        # Update the gene and trait probability distribution by adding p for each person.
         probabilities[person]["gene"][gene_count] += p
         probabilities[person]["trait"][has_trait] += p
 
