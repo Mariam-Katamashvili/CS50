@@ -179,8 +179,10 @@ def joint_probability(people, one_gene, two_genes, have_trait):
 
             # Now, depending on the gene count, calculate the probability that the child gets that many copies.
             if gene_count == 0:
+                # probability that mother/father does not pass gene = 1 - pass_prob_mother/father
                 gene_prob = (1 - pass_prob_mother) * (1 - pass_prob_father)
             elif gene_count == 1:
+                # child must inherit from only one parent
                 gene_prob = (pass_prob_mother * (1 - pass_prob_father)) + ((1 - pass_prob_mother) * pass_prob_father)
             elif gene_count == 2:
                 gene_prob = pass_prob_mother * pass_prob_father
