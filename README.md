@@ -15,6 +15,12 @@ The tasks in this repository are structured in the following order:
 4. **Minesweeper**
 5. **PageRank**
 6. **Heredity**
+7. **Crossword**
+8. **Shopping**
+9. **Nim**
+10. **Trafiic**
+11. **Parser**
+12. **Attention**
 
 ## Getting Started
 
